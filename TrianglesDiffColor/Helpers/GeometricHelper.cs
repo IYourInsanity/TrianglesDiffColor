@@ -131,16 +131,18 @@ internal static class GeometricHelper
             return false;
         }
 
-        var resultBag = new ConcurrentBag<bool>();
+        
         var sourceSegmentCount = source.Segments.Count;
         var targetSegmentCount = target.Segments.Count;
 
-        if(sourceSegmentCount != targetSegmentCount)
+        if (sourceSegmentCount != targetSegmentCount)
         {
             return false;
         }
 
-        Parallel.For(0, sourceSegmentCount, i =>
+        var resultBag = new List<bool>(sourceSegmentCount);
+
+        for (int i = 0; i < sourceSegmentCount; i++)
         {
             var shouldInverse = i + 1 > sourceSegmentCount;
 
@@ -156,7 +158,7 @@ internal static class GeometricHelper
             var result = CheckSegment(sourceSegment, targetSegment, sourcePos1, sourcePos2, targetPos1, targetPos2);
 
             resultBag.Add(result);
-        });
+        }
 
         if (resultBag.All(include => include))
         {
